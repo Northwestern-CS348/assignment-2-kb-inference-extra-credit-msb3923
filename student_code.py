@@ -142,6 +142,49 @@ class KnowledgeBase(object):
         """
         ####################################################
         # Student code goes here
+        string = ""
+        if(fact_or_rule in self.facts):
+            string = string + "fact: " + self._statementToString(fact_or_rule.statement) + "\n" + "  SUPPORTED BY"
+            for i in fact_or_rule.supported_by:
+                if i.asserted:
+                    assertCheck = " ASSERTED"
+                else:
+                    assertCheck = ""
+                string = string + "    fact: " + self._statementToString(i.statement) + assertCheck + "\n"
+        elif(fact_or_rule in self.rules):
+            lhs = "("
+            for i in fact_or_rule.lhs:
+                lhs = lhs + self._statementToString(i) + ","
+            lhs[-1] = ")"
+            string = string + "rule: " + lhs + "->" + self._statementToString(fact_or_rule.rhs) + "\n" + "  SUPPORTED BY"
+            for i in fact_or_rule.supported_by:
+                if i.asserted:
+                    assertCheck = " ASSERTED"
+                else:
+                    assertCheck = ""
+                lhs = "("
+                for j in i.lhs:
+                    lhs = lhs + self._statementToString(j) + ","
+                lhs[-1] = ")"
+                string = string + "rule: " + lhs + " ->" + self._statementToString(i.rhs) + assertCheck + "\n"
+        else:
+            if isinstance(fact_or_rule, Fact):
+                string = "Fact is not in the KB"
+            else:
+                string = 'Rule is not in the KB'
+        return string
+
+    def _statementToString(self, x):
+        y = "("
+        y = y + str(x.predicate)
+        for i in x.terms:
+            y = y + " " + str(i)
+        y = y + ")"
+        return y
+            
+            
+            
+
 
 
 class InferenceEngine(object):
